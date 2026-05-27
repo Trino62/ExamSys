@@ -30,7 +30,7 @@
 ## 🚀 Inicio rápido con Docker
 
 ```bash
-git clone https://github.com/tu-usuario/examsys.git
+git clone https://github.com/Trino62/ExamSys.git
 cd examsys
 docker-compose up -d
 ```
@@ -57,7 +57,7 @@ La base de datos se inicializa automáticamente con preguntas de ejemplo y una p
 **1. Clona el repositorio**
 
 ```bash
-git clone https://github.com/tu-usuario/examsys.git
+git clone https://github.com/Trino62/ExamSys.git
 cd examsys
 ```
 
