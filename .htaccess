@@ -1,0 +1,19 @@
+# ── Protección de archivos sensibles ─────────────────────────────────────────
+
+# Deshabilitar listado de directorios
+Options -Indexes
+
+# Bloquear .env y todos los dotfiles (.gitignore, .dockerignore, .env.example…)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Bloquear archivos SQL (migraciones y DDL)
+<FilesMatch "\.sql$">
+    Require all denied
+</FilesMatch>
+
+# Bloquear archivos de infraestructura y documentación interna
+<FilesMatch "^(docker-compose\.yml|Dockerfile|CLAUDE\.md)$">
+    Require all denied
+</FilesMatch>

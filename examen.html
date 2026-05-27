@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examen de Programación Web</title>
+  <style>
+    :root {
+      --bg:        #f2f5f8;
+      --bg-card:   #ffffff;
+      --bg-sub:    #f7f9fb;
+      --text:      #1a2a3a;
+      --text-2:    #555;
+      --text-3:    #888;
+      --text-4:    #bbb;
+      --border:    #dde3ec;
+      --border-s:  #f0f3f7;
+      --sh:        rgba(0,0,0,.08);
+    }
+    [data-theme="dark"] {
+      --bg:        #0e1520;
+      --bg-card:   #172030;
+      --bg-sub:    #1b2840;
+      --text:      #dce8f5;
+      --text-2:    #8facbe;
+      --text-3:    #566d80;
+      --text-4:    #3c5265;
+      --border:    #243147;
+      --border-s:  #192840;
+      --sh:        rgba(0,0,0,.35);
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f2f5f8;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────── */
+    .exam-header {
+      background: linear-gradient(135deg, #1d3759 0%, #2b4f80 100%);
+      color: white;
+      padding: 22px 24px 18px;
+      text-align: center;
+    }
+
+    .exam-header h1 {
+      margin: 0 0 14px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    /* progress bar */
+    .progress-wrap {
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      opacity: .8;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, .25);
+      border-radius: 99px;
+      height: 7px;
+      overflow: hidden;
+    }
+
+    /* COUNTDOWN */
+    .countdown {
+      font-size: .85rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, .18);
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-top: 10px;
+      display: inline-block;
+      letter-spacing: .5px;
+      transition: background .3s, color .3s;
+    }
+
+    .countdown.urgent {
+      background: rgba(229, 57, 53, .75);
+      animation: pulse .7s infinite alternate;
+    }
+
+    @keyframes pulse {
+      to {
+        background: rgba(229, 57, 53, 1);
+      }
+    }
+
+    .progress-bar-fill {
+      background: white;
+      height: 100%;
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+
+    /* ── CARD ───────────────────────────── */
+    .card {
+      background: white;
+      width: 90%;
+      max-width: 560px;
+      margin: 32px auto 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+      overflow: hidden;
+    }
+
+    .card-body {
+      padding: 32px 28px 28px;
+    }
+
+    /* ── QUESTION ───────────────────────── */
+    .question-meta {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #2b4f80;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1a2a3a;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    /* ── OPTIONS ────────────────────────── */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #f7f9fb;
+      border: 2px solid #e0e7ef;
+      border-radius: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      user-select: none;
+    }
+
+    .option-card:hover {
+      border-color: #2b4f80;
+      background: #eaf0f9;
+    }
+
+    .option-card.selected {
+      border-color: #2b4f80;
+      background: #dce8f7;
+    }
+
+    .option-card input[type="radio"] {
+      display: none;
+    }
+
+    .opt-letter {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #e0e7ef;
+      color: #2b4f80;
+      font-weight: 700;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+
+    .option-card.selected .opt-letter {
+      background: #2b4f80;
+      color: white;
+    }
+
+    .opt-text {
+      font-size: 0.95rem;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .option-card.selected .opt-text {
+      color: #1d3759;
+      font-weight: 600;
+    }
+
+    /* short answer */
+    .short-input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #e0e7ef;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .short-input:focus {
+      border-color: #2b4f80;
+    }
+
+    /* ── BUTTON ─────────────────────────── */
+    .btn-next {
+      display: block;
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      background: #2b4f80;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      letter-spacing: .3px;
+    }
+
+    .btn-next:hover {
+      background: #1d3759;
+    }
+
+    /* ── RESULTADO ──────────────────────── */
+    .score-card {
+      background: linear-gradient(135deg, #1d3759, #2b4f80);
+      color: white;
+      text-align: center;
+      padding: 32px 24px;
+    }
+
+    .score-card .score-num {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .score-card .score-den {
+      font-size: 1.1rem;
+      opacity: .75;
+      margin-bottom: 16px;
+    }
+
+    .nivel-pill {
+      display: inline-block;
+      padding: 6px 20px;
+      border-radius: 99px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .score-card .nivel-desc {
+      font-size: 0.85rem;
+      opacity: .8;
+    }
+
+    .exam-stats {
+      margin-top: 14px;
+      font-size: 0.82rem;
+      opacity: .7;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* review items */
+    .review {
+      padding: 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .review-item {
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .review-item.correct {
+      background: #e8f5e9;
+      border: 1.5px solid #4caf50;
+      color: #1b5e20;
+    }
+
+    .review-item.wrong {
+      background: #ffebee;
+      border: 1.5px solid #ef5350;
+      color: #b71c1c;
+    }
+
+    .review-item .ri-num {
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      opacity: .7;
+    }
+
+    .review-item .ri-q {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .review-item .ri-ans {
+      font-size: 0.85rem;
+    }
+
+    .review-item .ri-ans span {
+      font-weight: 700;
+    }
+
+    .btn-finish {
+      display: block;
+      margin: 0 28px 28px;
+      padding: 14px;
+      background: #2b4f80;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background .2s;
+    }
+
+    .btn-finish:hover {
+      background: #1d3759;
+      color: white;
+    }
+
+    /* ── View Transitions ───────────────── */
+    @view-transition {
+      navigation: auto;
+    }
+
+    @keyframes vt-out {
+      to {
+        opacity: 0;
+        translate: 0 -6px;
+      }
+    }
+
+    @keyframes vt-in {
+      from {
+        opacity: 0;
+        translate: 0 10px;
+      }
+    }
+
+    ::view-transition-old(root) {
+      animation: 180ms ease both vt-out;
+    }
+
+    ::view-transition-new(root) {
+      animation: 280ms ease both vt-in;
+    }
+
+    /* Same-document: pregunta a pregunta */
+    #quiz {
+      view-transition-name: quiz-area;
+      contain: layout;
+    }
+
+    ::view-transition-old(quiz-area) {
+      animation: 160ms ease both vt-q-out;
+    }
+
+    ::view-transition-new(quiz-area) {
+      animation: 240ms ease both vt-q-in;
+    }
+
+    @keyframes vt-q-out {
+      to {
+        opacity: 0;
+        transform: translateX(-18px);
+      }
+    }
+
+    @keyframes vt-q-in {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+    }
+
+    /* ── Responsive ─────────────────────── */
+    @media (max-width: 480px) {
+      .card {
+        width: 95%;
+        margin: 20px auto 32px;
+      }
+
+      .card-body {
+        padding: 24px 18px 20px;
+      }
+
+      .question-text {
+        font-size: 0.98rem;
+        margin-bottom: 18px;
+      }
+
+      .option-card {
+        padding: 11px 12px;
+        gap: 10px;
+      }
+
+      .opt-letter {
+        width: 26px;
+        height: 26px;
+        font-size: 0.78rem;
+      }
+
+      .opt-text {
+        font-size: 0.9rem;
+      }
+
+      .btn-next {
+        padding: 13px;
+        font-size: 0.95rem;
+      }
+
+      .score-card {
+        padding: 28px 18px;
+      }
+
+      .score-card .score-num {
+        font-size: 2.8rem;
+      }
+
+      .exam-stats {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .review {
+        padding: 16px 14px;
+      }
+
+      .review-item {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+      }
+
+      .btn-finish {
+        margin: 0 14px 20px;
+        padding: 13px;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .exam-header h1 {
+        font-size: 1.1rem;
+      }
+
+      .card-body {
+        padding: 20px 14px 18px;
+      }
+
+      .opt-text {
+        font-size: 0.85rem;
+      }
+
+      .review {
+        padding: 14px 12px;
+      }
+
+      .btn-finish {
+        margin: 0 12px 18px;
+      }
+    }
+
+    /* ── Theme toggle ───────────────── */
+    .theme-toggle {
+      position: fixed; bottom: 22px; right: 20px; z-index: 8000;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg-card);
+      color: var(--text-2); font-size: .9rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, box-shadow .2s; padding: 0; line-height: 1;
+      box-shadow: 0 2px 8px var(--sh);
+    }
+    .theme-toggle:hover { box-shadow: 0 4px 14px var(--sh); background: var(--bg-sub); }
+    @media print { .theme-toggle { display: none !important; } }
+
+    /* ── Confirm submit overlay ─────────── */
+    .confirm-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 1000;
+      justify-content: center; align-items: center; padding: 16px;
+    }
+    .confirm-overlay.active { display: flex; }
+    .confirm-box {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 32px 24px 28px;
+      width: 90%; max-width: 340px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,.22);
+    }
+    .confirm-box .ci { font-size: 2.2rem; margin-bottom: 10px; }
+    .confirm-box h2  { color: var(--text); font-size: 1.15rem; margin: 0 0 8px; }
+    .confirm-box p   { color: var(--text-2); font-size: .87rem; line-height: 1.6; margin: 0 0 24px; }
+    .btn-send {
+      display: block; width: 100%; padding: 13px;
+      background: #2b4f80; color: white; border: none;
+      border-radius: 8px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+    }
+    .btn-send:hover { background: #1d3759; }
+    .confirm-cancel {
+      display: block; margin-top: 12px; background: none; border: none;
+      color: var(--text-3); font-size: .83rem; cursor: pointer;
+      text-decoration: underline; font-family: inherit;
+    }
+    .confirm-cancel:hover { color: var(--text-2); }
+
+    /* ── Dark overrides ─────────────── */
+    [data-theme="dark"] body { background: var(--bg); }
+    [data-theme="dark"] .card { background: var(--bg-card); box-shadow: 0 4px 20px var(--sh); }
+    [data-theme="dark"] .question-meta { color: #7aacde; }
+    [data-theme="dark"] .question-text { color: var(--text); }
+    [data-theme="dark"] .option-card { background: var(--bg-sub); border-color: var(--border); }
+    [data-theme="dark"] .option-card:hover { border-color: #4a7bc4; background: #1e2e48; }
+    [data-theme="dark"] .option-card.selected { border-color: #4a7bc4; background: #172844; }
+    [data-theme="dark"] .opt-letter { background: var(--border); color: #7aacde; }
+    [data-theme="dark"] .option-card.selected .opt-letter { background: #4a7bc4; color: white; }
+    [data-theme="dark"] .opt-text { color: var(--text-2); }
+    [data-theme="dark"] .option-card.selected .opt-text { color: var(--text); }
+    [data-theme="dark"] .short-input { background: var(--bg-sub); border-color: var(--border); color: var(--text); }
+    [data-theme="dark"] .short-input:focus { border-color: #4a7bc4; box-shadow: 0 0 0 3px rgba(74,123,196,.15); }
+    [data-theme="dark"] .score-card { background: linear-gradient(135deg,#091422,#102040); }
+    [data-theme="dark"] .review-item.correct { background: #0d2218; border-color: #2e7d32; color: #81c784; }
+    [data-theme="dark"] .review-item.wrong { background: #1e0c0c; border-color: #b71c1c; color: #ef9a9a; }
+  </style>
+  <script>
+    (function(){
+      var t=localStorage.getItem('examsys_theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',t);
+    })();
+  </script>
+</head>
+
+<body>
+  <button id="themeBtn" class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">🌙</button>
+  <script>document.getElementById('themeBtn').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';</script>
+
+  <!-- HEADER -->
+  <div class="exam-header">
+    <h1>Examen de Programación Web</h1>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progressText">Cargando…</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div id="countdownWrap" style="text-align:center;margin-top:8px;display:none">
+        <span class="countdown" id="countdownDisplay">⏱ --:--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card" id="card">
+    <div class="card-body" id="quiz">
+      <p style="text-align:center;color:#999;padding:20px 0;">Cargando preguntas…</p>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <!-- CONFIRMAR ENVÍO -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <div class="ci">📋</div>
+      <h2>¿Enviar el examen?</h2>
+      <p id="confirmMsg">Una vez enviado no podrás modificar tus respuestas.</p>
+      <button class="btn-send" onclick="confirmarEnvio()">Enviar examen</button>
+      <button class="confirm-cancel" onclick="cancelarEnvio()">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('examsys_theme', t);
+      document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+    }
+
+    function runTransition(fn) {
+      if (document.startViewTransition) {
+        document.startViewTransition(fn);
+      } else {
+        fn();
+      }
+    }
+
+    function escapeHTML(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function evaluarTextoPorPalabras(respuestaUsuario, pregunta) {
+      if (pregunta.passed) return;
+      const palabrasClave = pregunta.palabrasClave;
+      const texto = respuestaUsuario.toLowerCase();
+      let aciertos = 0;
+      palabrasClave.forEach(p => { if (texto.includes(p.toLowerCase())) aciertos++; });
+      return aciertos / palabrasClave.length >= 0.6;
+    }
+
+    function getNivel(aciertos, total) {
+      if (total === 0) return { label: 'Sin datos', bg: '#9e9e9e', color: '#fff', desc: '' };
+      const pct = aciertos / total;
+      if (pct < 0.21) return { label: 'Sin base', bg: '#e53935', color: '#fff', desc: 'No cuenta con los conocimientos mínimos para prácticas' };
+      if (pct < 0.41) return { label: 'Básico', bg: '#fb8c00', color: '#fff', desc: 'Conoce conceptos aislados, requiere mucha formación' };
+      if (pct < 0.62) return { label: 'En desarrollo', bg: '#039be5', color: '#fff', desc: 'Maneja la lógica básica, puede aprender durante las prácticas' };
+      if (pct < 0.82) return { label: 'Aceptable', bg: '#5c6bc0', color: '#fff', desc: 'Buen manejo del stack, listo para integrarse con guía' };
+      return { label: 'Destacado', bg: '#43a047', color: '#fff', desc: 'Dominio sólido del stack, candidato ideal para prácticas' };
+    }
+
+    const LETTERS = ["A", "B", "C", "D"];
+
+    let questions = [];
+    let current = 0;
+    let score = 0;
+    const userAnswers = [];
+    let candidatoEmail = '';
+
+    // ── Countdown ────────────────────────────────────────────────
+    let countdownSec = null;
+    let countdownTick = null;
+    let tiempoLimite = null;   // se guarda al cargar, arranca después del nombre
+
+    function startCountdown(seconds) {
+      countdownSec = seconds;
+      document.getElementById('countdownWrap').style.display = '';
+      renderCountdown();
+      countdownTick = setInterval(() => {
+        countdownSec--;
+        renderCountdown();
+        if (countdownSec <= 0) {
+          clearInterval(countdownTick);
+          countdownTick = null;
+          autoSubmit();
+        }
+      }, 1000);
+    }
+
+    function stopCountdown() {
+      if (countdownTick) { clearInterval(countdownTick); countdownTick = null; }
+      document.getElementById('countdownWrap').style.display = 'none';
+    }
+
+    function renderCountdown() {
+      const el = document.getElementById('countdownDisplay');
+      const m = Math.floor(Math.max(countdownSec, 0) / 60);
+      const s = String(Math.max(countdownSec, 0) % 60).padStart(2, '0');
+      el.textContent = `⏱ ${m}:${s}`;
+      el.parentElement.querySelector('.countdown')?.classList.toggle('urgent', countdownSec <= 30);
+    }
+
+    function autoSubmit() {
+      // forzar respuesta en blanco si hay pregunta sin contestar
+      if (current < questions.length) {
+        const q = questions[current];
+        if (q && !q.passed) {
+          if (q.type === 'short') {
+            userAnswers.push({ q: q.q, res: '', resCorrecta: q.answer, correct: false });
+          } else {
+            userAnswers.push({
+              q: q.q, res: -1, resCorrecta: q.correct, correct: false,
+              options: q.options, categoria: q.categoria
+            });
+          }
+          current++;
+        }
+      }
+      if (endTime === null) endTime = Date.now();
+      showResult();
+    }
+
+    // ── Métricas ─────────────────────────
+    let startTime = null;   // cuando aparece la pregunta 1
+    let endTime = null;   // cuando se responde la última
+    let cambiosFoco = 0;      // veces que se pierde el foco de la pestaña
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && startTime !== null && endTime === null) {
+        cambiosFoco++;
+      }
+    });
+
+    function formatTime(seg) {
+      if (seg === null || seg === undefined) return '—';
+      const m = Math.floor(seg / 60);
+      const s = String(seg % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    const quizDiv = document.getElementById("quiz");
+    const resultDiv = document.getElementById("result");
+
+    function updateProgress() {
+      // current=0 → nombre (no cuenta), real questions start at 1
+      const total = questions.length - 1;          // 10
+      const done = Math.max(current - 1, 0);      // answered MC questions
+      const pct = total > 0 ? Math.round(done / total * 100) : 0;
+      document.getElementById("progressText").textContent =
+        total > 0 ? `Pregunta ${Math.min(current, total)} de ${total}` : "Cargando…";
+      document.getElementById("progressPct").textContent = pct + "%";
+      document.getElementById("progressFill").style.width = pct + "%";
+    }
+
+    function loadQuestion() {
+      if (current >= questions.length) { showResult(); return; }
+
+      updateProgress();
+
+      const q = questions[current];
+      const isMC = !q.type;
+
+      quizDiv.innerHTML = `
+        <div class="question-meta">${current === 0 ? 'Identificación' : `Pregunta ${current} de ${questions.length - 1}`}</div>
+        <div class="question-text">${escapeHTML(q.q)}</div>
+        <div class="options">
+          ${q.type === "short"
+          ? `<input class="short-input" type="text" id="shortAnswer" placeholder="Ej. Juan García" autocomplete="name">
+             ${current === 0 ? `
+               <label style="display:block;font-size:.8rem;font-weight:600;color:#888;margin:14px 0 5px">
+                 Correo electrónico <span style="font-weight:400">(opcional)</span>
+               </label>
+               <input class="short-input" type="email" id="emailAnswer" placeholder="correo@ejemplo.com" autocomplete="email">
+             ` : ''}`
+          : q.options.map((opt, i) => `
+                <label class="option-card" id="opt-${i}">
+                  <input type="radio" name="option" value="${i}">
+                  <span class="opt-letter">${LETTERS[i]}</span>
+                  <span class="opt-text">${escapeHTML(opt)}</span>
+                </label>`).join("")
+        }
+        </div>
+        <button class="btn-next" onclick="nextQuestion()">
+          ${current === questions.length - 1 ? "Ver resultado →" : "Siguiente →"}
+        </button>`;
+
+      // highlight selected option on click
+      if (isMC) {
+        quizDiv.querySelectorAll('.option-card').forEach(label => {
+          label.addEventListener('click', () => {
+            quizDiv.querySelectorAll('.option-card').forEach(l => l.classList.remove('selected'));
+            label.classList.add('selected');
+          });
+        });
+      } else {
+        setTimeout(() => document.getElementById("shortAnswer")?.focus(), 50);
+      }
+    }
+
+    function nextQuestion() {
+      const q = questions[current];
+      if (q.type === "short") {
+        const val = document.getElementById("shortAnswer").value.trim();
+        if (!val) { alert("Escribe tu nombre para continuar"); return; }
+        if (current === 0) {
+          const emailVal = document.getElementById("emailAnswer")?.value.trim() ?? '';
+          if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+            alert("El formato del correo electrónico no es válido.");
+            document.getElementById("emailAnswer").focus();
+            return;
+          }
+          candidatoEmail = emailVal;
+        }
+        const res = val.toLowerCase();
+        const ok = evaluarTextoPorPalabras(res, q);
+        userAnswers.push({ q: q.q, res: val, resCorrecta: q.answer, correct: ok });
+        if (ok) score++;
+      } else {
+        const sel = document.querySelector('input[name="option"]:checked');
+        if (!sel) { alert("Selecciona una respuesta antes de continuar"); return; }
+        const ans = parseInt(sel.value);
+        if (current === questions.length - 1) {
+          pendingLastAnswer = { q, ans };
+          mostrarConfirmacion();
+          return;
+        }
+        userAnswers.push({ q: q.q, res: ans, resCorrecta: q.correct, correct: ans === q.correct, options: q.options, categoria: q.categoria });
+        if (ans === q.correct) score++;
+      }
+      // ── timer ────────────────────────────
+      if (current === 0) {
+        startTime = Date.now();                      // arranca al enviar el nombre
+        if (tiempoLimite) startCountdown(tiempoLimite);
+      }
+      if (current === questions.length - 1) {
+        endTime = Date.now();                        // para al responder la última
+        stopCountdown();
+      }
+
+      current++;
+      runTransition(loadQuestion);
+    }
+
+    // ── Confirmación de envío ────────────────────────────────────
+    let pendingLastAnswer = null;
+
+    function mostrarConfirmacion() {
+      const total = questions.length - 1;
+      document.getElementById('confirmMsg').textContent =
+        `Has respondido ${total} de ${total} preguntas. Una vez enviado no podrás modificar tus respuestas.`;
+      document.getElementById('confirmOverlay').classList.add('active');
+    }
+
+    function cancelarEnvio() {
+      pendingLastAnswer = null;
+      document.getElementById('confirmOverlay').classList.remove('active');
+    }
+
+    function confirmarEnvio() {
+      document.getElementById('confirmOverlay').classList.remove('active');
+      const { q, ans } = pendingLastAnswer;
+      pendingLastAnswer = null;
+      userAnswers.push({ q: q.q, res: ans, resCorrecta: q.correct, correct: ans === q.correct, options: q.options, categoria: q.categoria });
+      if (ans === q.correct) score++;
+      endTime = Date.now();
+      stopCountdown();
+      current++;
+      runTransition(loadQuestion);
+    }
+
+    // cierra al click fuera del modal
+    document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+      if (e.target === this) cancelarEnvio();
+    });
+
+    function showResult() {
+      stopCountdown();   // por si llegó aquí vía autoSubmit o ruta alternativa
+
+      const total = questions.length - 1;
+      const nivel = getNivel(score, total);
+
+      // progress → 100%
+      document.getElementById("progressText").textContent = "Completado";
+      document.getElementById("progressPct").textContent = "100%";
+      document.getElementById("progressFill").style.width = "100%";
+
+      quizDiv.innerHTML = "";
+
+      const tiempoSegundos = (startTime && endTime)
+        ? Math.round((endTime - startTime) / 1000)
+        : null;
+
+      // score card
+      let html = `
+        <div class="score-card">
+          <div class="score-num">${score}</div>
+          <div class="score-den">de ${total} preguntas</div>
+          <div class="nivel-pill" style="background:${nivel.bg};color:${nivel.color}">${nivel.label}</div>
+          <div class="nivel-desc">${nivel.desc}</div>
+          <div class="exam-stats">
+            <span title="Tiempo de respuesta">⏱ ${formatTime(tiempoSegundos)}</span>
+          </div>
+        </div>
+        <div class="review">`;
+
+      let num = 0;
+      questions.forEach((q, i) => {
+        if (q.passed) return;
+        num++;
+        const ua = userAnswers[i];
+        const ok = ua?.correct ?? (ua?.res === q.correct);
+        if (q.type === "short") {
+          html += `
+            <div class="review-item ${ok ? "correct" : "wrong"}">
+              <div class="ri-num">${ok ? "✓" : "✗"} Pregunta ${num}</div>
+              <div class="ri-q">${escapeHTML(q.q)}</div>
+              <div class="ri-ans">
+                <span>Tu respuesta:</span> ${escapeHTML(ua?.res || "Sin respuesta")}<br>
+                <span>Correcta:</span> ${escapeHTML(q.answer)}
+              </div>
+            </div>`;
+        } else {
+          html += `
+            <div class="review-item ${ok ? "correct" : "wrong"}">
+              <div class="ri-num">${ok ? "✓" : "✗"} Pregunta ${num}</div>
+              <div class="ri-q">${escapeHTML(q.q)}</div>
+              <div class="ri-ans">
+                <span>Tu respuesta:</span> ${escapeHTML(q.options?.[ua?.res] ?? "Sin respuesta")}<br>
+                <span>Correcta:</span> ${LETTERS[q.correct]}. ${escapeHTML(q.options?.[q.correct] ?? "")}
+              </div>
+            </div>`;
+        }
+      });
+
+      html += `</div>`;
+      resultDiv.innerHTML = html;
+
+      // botón terminar
+      const btn = document.createElement("a");
+      btn.href = "index.html";
+      btn.className = "btn-finish";
+      btn.textContent = "Terminar examen";
+      document.getElementById("card").appendChild(btn);
+
+      // guardar en BD
+      fetch("server/resultados.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userAnswers, tiempoSegundos, cambiosFoco, templateSlug, email: candidatoEmail || null }),
+      }).catch(console.error);
+    }
+
+    // ── Título dinámico ─────────────────────
+    fetch('server/config.php')
+      .then(r => r.json())
+      .then(cfg => {
+        const titulo = cfg.titulo || 'Examen';
+        document.title = titulo;
+        const h1 = document.querySelector('.exam-header h1');
+        if (h1) h1.textContent = titulo;
+      })
+      .catch(() => { });
+
+    // ── INIT ────────────────────────────────
+    const templateSlug = new URLSearchParams(window.location.search).get('t');
+
+    if (!templateSlug) {
+      quizDiv.innerHTML = `
+        <div style="text-align:center;padding:48px 24px;max-width:420px;margin:0 auto;">
+          <div style="font-size:3rem;margin-bottom:16px;">🔗</div>
+          <h2 style="color:#2b4f80;font-size:1.25rem;margin-bottom:12px;">Enlace inválido</h2>
+          <p style="color:#555;font-size:0.95rem;line-height:1.6;margin-bottom:24px;">
+            Esta página solo puede abrirse desde un enlace de examen proporcionado por el reclutador.
+            Si crees que esto es un error, contacta a quien te envió el enlace.
+          </p>
+          <a href="index.php" style="display:inline-block;background:#2b4f80;color:white;padding:10px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.95rem;">← Volver al inicio</a>
+        </div>`;
+      document.querySelector('.exam-header')?.remove();
+    } else {
+      const pregUrl = 'server/preguntas.php?t=' + encodeURIComponent(templateSlug);
+
+      fetch(pregUrl)
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) throw new Error(data.error);
+
+          // soporte para nuevo formato {questions, tiempo_segundos} y viejo formato array
+          const qs = Array.isArray(data) ? data : (data.questions ?? []);
+          questions = [
+            { q: "Nombre completo", type: "short", answer: "Nombre de usuario", passed: true },
+            ...qs,
+          ];
+
+          tiempoLimite = data.tiempo_segundos ?? null;   // guardar, NO arrancar aún
+
+          runTransition(loadQuestion);
+        })
+        .catch(err => {
+          quizDiv.innerHTML = `<p style="text-align:center;color:#e53935;padding:20px 0;">
+            Error al cargar las preguntas. Recarga la página.<br>
+            <small style="opacity:.6">${err?.message ?? ''}</small>
+          </p>`;
+        });
+    }
+  </script>
+</body>
+
+</html>
