@@ -274,6 +274,24 @@ No se requiere ningún cambio en el código.
 
 ---
 
+## 🗺️ Roadmap
+
+### Tipos de preguntas
+
+Actualmente ExamSys solo soporta **preguntas de opción múltiple** (A / B / C / D). Es el tipo más sencillo de calificar automáticamente, pero queremos ir más allá.
+
+Está planeado añadir soporte para otros tipos de pregunta:
+
+| Tipo | Descripción | Estado |
+|---|---|---|
+| Opción múltiple | A / B / C / D con corrección automática | ✅ Disponible |
+| Respuesta abierta | Campo de texto libre; revisión manual por el reclutador | 🔜 Pendiente |
+| Fragmento de código | Editor con syntax highlighting; el candidato escribe o corrige código | 🔜 Pendiente |
+
+Si quieres contribuir a alguna de estas funcionalidades, ¡los PRs son bienvenidos! Ver la sección **Contribuir** más abajo.
+
+---
+
 ## 🤝 Contribuir
 
 ¡Las contribuciones son bienvenidas!
