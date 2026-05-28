@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # ── 1. Escaneo de secretos ─────────────────────────────────────────
+  secrets:
+    name: 🔐 Escaneo de secretos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # necesario para escanear todo el historial
+
+      - name: Gitleaks — detectar credenciales expuestas
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── 2. Verificar que .env no esté comprometido ────────────────────
+  env-check:
+    name: 🚫 Verificar .env no comprometido
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Asegurar que .env no está rastreado por git
+        run: |
+          if git ls-files | grep -qE "^\.env$"; then
+            echo "❌ ERROR: El archivo .env está siendo rastreado por git."
+            echo "   Contiene credenciales y nunca debe subirse al repositorio."
+            echo "   Ejecuta: git rm --cached .env"
+            exit 1
+          fi
+          echo "✅ .env no está en el repositorio."
+
+  # ── 3. Sintaxis PHP ────────────────────────────────────────────────
+  php-lint:
+    name: 🐘 Sintaxis PHP
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Validar sintaxis de todos los archivos PHP
+        run: |
+          ERROR=0
+          while IFS= read -r file; do
+            if ! php -l "$file" > /dev/null 2>&1; then
+              echo "❌ Error de sintaxis en: $file"
+              php -l "$file"
+              ERROR=1
+            fi
+          done < <(find . -name "*.php" -not -path "./.git/*")
+          if [ $ERROR -eq 0 ]; then
+            echo "✅ Todos los archivos PHP son sintácticamente válidos."
+          fi
+          exit $ERROR
